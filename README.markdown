@@ -20,21 +20,28 @@ SKProducts are cached per app run, so future requests for the same SKProduct wil
 ## Purchase a product
 
 ```objc
-NSString *itemKey = @"com.bigpaua.CoolApp.CoolFeature";
-[[MGStoreKit store] purchaseProduct:itemKey success:^(NSString *productId) {
+if (![MGStoreKit store].canMakePayments) {
 
-    // It's your responsibility to save the purchases to keychain, Core Data, 
-    // or elsewhere. As a lightweight wrapper, MGStoreKit leaves these app 
-    // level details up to you.
-    
-    NSLog(@"Purchased:%@", productId);
+    NSLog(@"Not going to happen. The user can't make payments.");
 
-} failed:^(NSString *productId) {
+} else {
 
-    // Failure is most likely the user changing their mind and tapping Cancel.
-    
-    NSLog(@"Failed:%@", productId);
-}];
+    NSString *itemKey = @"com.bigpaua.CoolApp.CoolFeature";
+    [[MGStoreKit store] purchaseProduct:itemKey success:^(NSString *productId) {
+
+        // It's your responsibility to save the purchases to keychain, Core Data, 
+        // or elsewhere. As a lightweight wrapper, MGStoreKit leaves these app 
+        // level details up to you.
+        
+        NSLog(@"Purchased:%@", productId);
+
+    } failed:^(NSString *productId) {
+
+        // Failure is most likely the user changing their mind and tapping Cancel.
+        
+        NSLog(@"Failed:%@", productId);
+    }];
+}
 ```
 
 ## Restore previous purchases
