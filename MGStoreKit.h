@@ -14,6 +14,8 @@ typedef void (^PurchaseCallback)(NSString *productId);
 @interface MGStoreKit : NSObject
         <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
++ (MGStoreKit *)store;
+
 // fetch products data
 - (void)requestProductsData:(NSSet *)products
                    callback:(ProductsCallback)callback;
@@ -25,6 +27,8 @@ typedef void (^PurchaseCallback)(NSString *productId);
 - (void)purchaseProduct:(NSString *)productId
                 success:(PurchaseCallback)callback
                  failed:(PurchaseCallback)failed;
+
+// restore previous purchases
 - (void)restore:(ProductsCallback)callback;
 
 @property (nonatomic, retain) NSMutableDictionary *cachedProducts;

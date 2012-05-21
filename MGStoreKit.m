@@ -19,14 +19,24 @@
 
 @implementation MGStoreKit
 
+static MGStoreKit *singleton;
+
 @synthesize cachedProducts, productsRequest;
 @synthesize productsCallback, purchaseCallback, failedCallback, restoreCallback;
+
++ (void)initialize {
+    singleton = [[MGStoreKit alloc] init];
+}
 
 - (id)init {
     self = [super init];
     self.cachedProducts = [NSMutableDictionary dictionary];
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     return self;
+}
+
++ (MGStoreKit *)store {
+    return singleton;
 }
 
 - (void)requestProductsData:(NSSet *)keys
@@ -49,7 +59,9 @@
     self.productsRequest =
             [[SKProductsRequest alloc] initWithProductIdentifiers:keys];
     self.productsRequest.delegate = self;
-    [self.productsRequest start];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self.productsRequest start];
+    });
 }
 
 - (BOOL)canMakePayments {
